@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porto Fuori · Raccolta Differenziata Porto Torres 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,500;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #7a7a8a;
+    --accent: #2d6a4f;
+
+    --umido: #52b788;
+    --umido-bg: #d8f3dc;
+    --carta: #457b9d;
+    --carta-bg: #dbeafe;
+    --vetro: #6a994e;
+    --vetro-bg: #d4edda;
+    --plastica: #e9c46a;
+    --plastica-bg: #fff3cd;
+    --sfalci: #a7c957;
+    --sfalci-bg: #ecf4d5;
+    --secco: #6c757d;
+    --secco-bg: #e9ecef;
+    --pannolini: #c77dff;
+    --pannolini-bg: #f3e8ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--accent);
+    color: white;
+    padding: 28px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .city-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  header p.subtitle {
+    font-size: 13px;
+    opacity: 0.65;
+    font-style: italic;
+  }
+  .tonight-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* DATE DISPLAY */
+  .date-section {
+    background: white;
+    margin: 0 16px;
+    margin-top: -16px;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .date-today {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .date-full {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: capitalize;
+  }
+  .nav-arrows {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .nav-btn {
+    background: var(--bg);
+    border: none;
+    border-radius: 10px;
+    width: 40px; height: 40px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+    color: var(--text);
+  }
+  .nav-btn:hover { background: #e0d9cc; transform: scale(1.05); }
+  .nav-btn.today-btn {
+    width: auto; padding: 0 12px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--umido-bg);
+  }
+
+  /* MAIN CONTENT */
+  main { padding: 20px 16px 0; }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    margin-left: 2px;
+  }
+
+  /* COLLECTION CARDS */
+  .collections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .collection-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-left: 5px solid;
+    animation: slideIn 0.3s ease forwards;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .collection-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .collection-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .collection-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .card-umido     { border-color: var(--umido);    }
+  .card-carta     { border-color: var(--carta);    }
+  .card-vetro     { border-color: var(--vetro);    }
+  .card-plastica  { border-color: var(--plastica); }
+  .card-sfalci    { border-color: var(--sfalci);   }
+  .card-secco     { border-color: var(--secco);    }
+  .card-pannolini { border-color: var(--pannolini);}
+
+  .icon-umido     { background: var(--umido-bg);    }
+  .icon-carta     { background: var(--carta-bg);    }
+  .icon-vetro     { background: var(--vetro-bg);    }
+  .icon-plastica  { background: var(--plastica-bg); }
+  .icon-sfalci    { background: var(--sfalci-bg);   }
+  .icon-secco     { background: var(--secco-bg);    }
+  .icon-pannolini { background: var(--pannolini-bg);}
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 52px; margin-bottom: 12px; }
+  .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; }
+
+  /* ASTERISK NOTE */
+  .asterisk-note {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #795548;
+    margin-bottom: 24px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .asterisk-note span { font-size: 16px; }
+
+  /* WEEK PREVIEW */
+  .week-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    margin-bottom: 24px;
+  }
+  .week-strip::-webkit-scrollbar { display: none; }
+  .week-day {
+    flex-shrink: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 56px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  .week-day:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .week-day.active { background: var(--accent); color: white; }
+  .week-day .wd-name { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.6; }
+  .week-day.active .wd-name { opacity: 0.8; color: white; }
+  .week-day .wd-num { font-family: 'DM Serif Display', serif; font-size: 20px; margin: 2px 0; }
+  .week-day .wd-dots { display: flex; justify-content: center; gap: 3px; flex-wrap: wrap; margin-top: 2px; min-height: 10px; }
+  .wd-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* CCR INFO */
+  .info-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
+  .info-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .info-card p { font-size: 13px; line-height: 1.7; color: #444; }
+  .info-card a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+  footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── CALENDARIO COMPLETO ── */
+  .cal-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+    transition: background 0.15s;
+  }
+  .cal-toggle-btn:hover { background: #f9f6f0; }
+  .cal-toggle-btn .cal-toggle-right {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--accent); font-size: 13px;
+  }
+  .cal-toggle-arrow {
+    display: inline-block;
+    transition: transform 0.25s;
+    font-size: 18px;
+    color: var(--muted);
+  }
+  .cal-toggle-btn.open .cal-toggle-arrow { transform: rotate(180deg); }
+
+  .cal-panel {
+    display: none;
+    background: white;
+    border-radius: 14px;
+    padding: 20px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    animation: slideIn 0.2s ease forwards;
+  }
+  .cal-panel.open { display: block; }
+
+  .cal-month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .cal-month-nav button {
+    background: var(--bg);
+    border: none;
+    border-radius: 10px;
+    width: 36px; height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    transition: background 0.15s;
+  }
+  .cal-month-nav button:hover { background: #e0d9cc; }
+  .cal-month-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--accent);
+    text-transform: capitalize;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .cal-header-cell {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 0 8px;
+  }
+  .cal-cell {
+    border-radius: 10px;
+    padding: 6px 4px 5px;
+    text-align: center;
+    min-height: 52px;
+    cursor: pointer;
+    transition: background 0.12s;
+    position: relative;
+  }
+  .cal-cell:hover { background: #f5f0e8; }
+  .cal-cell.empty { cursor: default; }
+  .cal-cell.today { background: var(--umido-bg); }
+  .cal-cell.selected { background: var(--accent) !important; }
+  .cal-cell.selected .cal-day-num { color: white; }
+  .cal-cell.selected .cal-dot { opacity: 1; border: 1px solid rgba(255,255,255,0.4); }
+  .cal-cell.has-asterisk .cal-day-num::after {
+    content: '*';
+    font-size: 8px;
+    color: #e67e22;
+    vertical-align: super;
+    margin-left: 1px;
+  }
+  .cal-day-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .cal-cell.today .cal-day-num { color: var(--accent); }
+  .cal-cell.no-collection .cal-day-num { color: var(--muted); font-weight: 400; }
+  .cal-dots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    min-height: 14px;
+  }
+  .cal-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  /* Legenda */
+  .cal-legend {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0ece4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Detail panel for selected day in calendar */
+  .cal-day-detail {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: 12px;
+    display: none;
+  }
+  .cal-day-detail.show { display: block; }
+  .cal-day-detail-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--text);
+    text-transform: capitalize;
+  }
+  .cal-day-detail-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .cal-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="city-label">Città di Porto Torres</div>
+  <div class="tonight-badge">🌙 Metti fuori stasera</div>
+  <h1>Raccolta Differenziata</h1>
+  <p class="subtitle">Calendario porta a porta 2026</p>
+</header>
+
+<div class="date-section">
+  <div>
+    <div class="date-today" id="dayNum">--</div>
+    <div class="date-full" id="dateFull">--</div>
+  </div>
+  <div class="nav-arrows">
+    <button class="nav-btn" onclick="changeDay(-1)" title="Giorno precedente">‹</button>
+    <button class="nav-btn today-btn" onclick="goToday()">Stasera</button>
+    <button class="nav-btn" onclick="changeDay(1)" title="Giorno successivo">›</button>
+  </div>
+</div>
+
+<main>
+  <div id="asteriskNote" style="display:none" class="asterisk-note">
+    <span>⚠️</span>
+    <span>Giorno con <strong>soppressione e/o recupero</strong> di raccolte. Verifica eventuali variazioni con il calendario cartaceo.</span>
+  </div>
+
+  <div class="section-title">Prossimi 7 giorni</div>
+  <div class="week-strip" id="weekStrip"></div>
+
+  <div class="section-title" id="collectionsLabel">Raccolte di oggi</div>
+  <div class="collections" id="collections"></div>
+
+  <div class="section-title">Calendario Annuale 2026</div>
+
+  <button class="cal-toggle-btn" id="calToggleBtn" onclick="toggleCalendar()">
+    <span>📅 Visualizza tutto il calendario</span>
+    <span class="cal-toggle-right">
+      <span id="calToggleLabel">Apri</span>
+      <span class="cal-toggle-arrow" id="calArrow">⌄</span>
+    </span>
+  </button>
+
+  <div class="cal-panel" id="calPanel">
+    <div class="cal-month-nav">
+      <button onclick="changeCalMonth(-1)">‹</button>
+      <div class="cal-month-title" id="calMonthTitle"></div>
+      <button onclick="changeCalMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-day-detail" id="calDayDetail">
+      <div class="cal-day-detail-title" id="calDayDetailTitle"></div>
+      <div class="cal-day-detail-items" id="calDayDetailItems"></div>
+    </div>
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#52b788"></div>Umido</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#457b9d"></div>Carta</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6a994e"></div>Vetro</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e9c46a"></div>Plastica</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#a7c957"></div>Sfalci</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6c757d"></div>Secco</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c77dff"></div>Pannolini</div>
+      <div class="legend-item" style="color:#e67e22">* Soppressione/Recupero</div>
+    </div>
+  </div>
+
+  <div class="section-title">Centro Comunale di Raccolta</div>
+  <div class="info-card">
+    <h3>Orari CCR</h3>
+    <p>
+      <strong>Mattina</strong> (tutto l'anno):<br>
+      Lun–Mer–Ven 9:00–13:00 · Sab 8:30–13:00 · Dom 8:00–14:00<br><br>
+      <strong>Pomeriggio ott–apr:</strong> Lun–Mar–Mer–Gio–Sab 15:00–17:00<br>
+      <strong>Pomeriggio mag–set:</strong> Lun–Mar–Mer–Gio–Sab 16:00–18:00
+    </p>
+  </div>
+  <div class="info-card">
+    <h3>Contatti</h3>
+    <p>
+      📞 Numero verde: <a href="tel:800408670">800 408670</a><br>
+      Lun–Ven 8:00–13:00 · 15:00–17:30 · Sab 8:00–13:00<br><br>
+      🌐 <a href="https://www.portotorrespulita.it" target="_blank">www.portotorrespulita.it</a><br>
+      📦 Ingombranti & RAEE: ritiro su prenotazione
+    </p>
+  </div>
+</main>
+
+<footer>Dati dal calendario ufficiale Porto Torres 2026 · Utenze domestiche</footer>
+
+<script>
+// ── CALENDARIO COMPLETO 2026 ──────────────────────────────────────────────────
+// Chiavi: "YYYY-M-D"
+// Valori: array di codici raccolta + flag asterisco
+// U=Umido, CC=Carta&Cartone, V=Vetro, PL=Plastica&Lattine, SV=Sfalci Verdi, S=Secco Residuo, P=Pannolini
+// '*' = asterisco (soppressione/recupero)
+
+const calendar = {
+  // ── GENNAIO ──
+  "2026-1-1": {c:[], asterisk:true},
+  "2026-1-2": {c:["U","CC"], asterisk:true},
+  "2026-1-3": {c:["U","PL"]},
+  "2026-1-5": {c:["U","SV","V"], asterisk:true},
+  "2026-1-6": {c:["U"], asterisk:true},
+  "2026-1-7": {c:["U","PL"]},
+  "2026-1-8": {c:["CC"]},
+  "2026-1-9": {c:["U"]},
+  "2026-1-10": {c:["U","PL"]},
+  "2026-1-12": {c:["U"]},
+  "2026-1-13": {c:["V","S"]},
+  "2026-1-14": {c:["U","PL"]},
+  "2026-1-15": {c:["CC"]},
+  "2026-1-16": {c:["U"]},
+  "2026-1-17": {c:["U","PL"]},
+  "2026-1-19": {c:["U","SV"]},
+  "2026-1-20": {c:["V","S"]},
+  "2026-1-21": {c:["U","PL"]},
+  "2026-1-22": {c:["CC"]},
+  "2026-1-23": {c:["U"]},
+  "2026-1-24": {c:["U","PL"]},
+  "2026-1-26": {c:["U"]},
+  "2026-1-27": {c:["V","S"]},
+  "2026-1-28": {c:["U","PL"]},
+  "2026-1-29": {c:["CC"]},
+  "2026-1-30": {c:["U"]},
+  "2026-1-31": {c:["U","PL"]},
+  // ── FEBBRAIO ──
+  "2026-2-2": {c:["U","SV"]},
+  "2026-2-3": {c:["V","S"]},
+  "2026-2-4": {c:["U","PL"]},
+  "2026-2-5": {c:["CC"]},
+  "2026-2-6": {c:["U"]},
+  "2026-2-7": {c:["U","PL"]},
+  "2026-2-9": {c:["U"]},
+  "2026-2-10": {c:["V","S"]},
+  "2026-2-11": {c:["U","PL"]},
+  "2026-2-12": {c:["CC"]},
+  "2026-2-13": {c:["U"]},
+  "2026-2-14": {c:["U","PL"]},
+  "2026-2-16": {c:["U","SV"]},
+  "2026-2-17": {c:["V","S"]},
+  "2026-2-18": {c:["U","PL"]},
+  "2026-2-19": {c:["CC"]},
+  "2026-2-20": {c:["U"]},
+  "2026-2-21": {c:["U","PL"]},
+  "2026-2-23": {c:["U"]},
+  "2026-2-24": {c:["V","S"]},
+  "2026-2-25": {c:["U","PL"]},
+  "2026-2-26": {c:["CC"]},
+  "2026-2-27": {c:["U"]},
+  "2026-2-28": {c:["U","PL"]},
+  // ── MARZO ──
+  "2026-3-2": {c:["U","SV"]},
+  "2026-3-3": {c:["V","S"]},
+  "2026-3-4": {c:["U","PL"]},
+  "2026-3-5": {c:["CC"]},
+  "2026-3-6": {c:["U"]},
+  "2026-3-7": {c:["U","PL"]},
+  "2026-3-9": {c:["U"]},
+  "2026-3-10": {c:["V","S"]},
+  "2026-3-11": {c:["U","PL"]},
+  "2026-3-12": {c:["CC"]},
+  "2026-3-13": {c:["U"]},
+  "2026-3-14": {c:["U","PL"]},
+  "2026-3-16": {c:["U","SV"]},
+  "2026-3-17": {c:["V","S"]},
+  "2026-3-18": {c:["U","PL"]},
+  "2026-3-19": {c:["CC"]},
+  "2026-3-20": {c:["U"]},
+  "2026-3-21": {c:["U","PL"]},
+  "2026-3-23": {c:["U"]},
+  "2026-3-24": {c:["V","S"]},
+  "2026-3-25": {c:["U","PL"]},
+  "2026-3-26": {c:["CC"]},
+  "2026-3-27": {c:["U"]},
+  "2026-3-28": {c:["U","PL"]},
+  "2026-3-30": {c:["U","SV"]},
+  "2026-3-31": {c:["V","S"]},
+  // ── APRILE ──
+  "2026-4-1": {c:["U","PL"]},
+  "2026-4-2": {c:["CC"]},
+  "2026-4-3": {c:["U"]},
+  "2026-4-4": {c:["U","PL"]},
+  "2026-4-6": {c:["U"]},
+  "2026-4-7": {c:["V","S"]},
+  "2026-4-8": {c:["U","PL"]},
+  "2026-4-9": {c:["CC"]},
+  "2026-4-10": {c:["U"]},
+  "2026-4-11": {c:["U","PL"]},
+  "2026-4-13": {c:["U","SV"]},
+  "2026-4-14": {c:["V","S"]},
+  "2026-4-15": {c:["U","PL"]},
+  "2026-4-16": {c:["CC"]},
+  "2026-4-17": {c:["U"]},
+  "2026-4-18": {c:["V","S"]},
+  "2026-4-20": {c:["U"]},
+  "2026-4-21": {c:["V","S"]},
+  "2026-4-22": {c:["U","PL"]},
+  "2026-4-23": {c:["CC"]},
+  "2026-4-24": {c:["U","PL"], asterisk:true},
+  "2026-4-25": {c:["U"], asterisk:true},
+  "2026-4-27": {c:["U","SV"]},
+  "2026-4-28": {c:["V","S"]},
+  "2026-4-29": {c:["U","PL"]},
+  "2026-4-30": {c:["CC","U"], asterisk:true},
+  // ── MAGGIO ──
+  "2026-5-1": {c:[], asterisk:true},
+  "2026-5-2": {c:["U","PL"]},
+  "2026-5-4": {c:["U"]},
+  "2026-5-5": {c:["V","S"]},
+  "2026-5-6": {c:["U","PL"]},
+  "2026-5-7": {c:["CC"]},
+  "2026-5-8": {c:["U"]},
+  "2026-5-9": {c:["U","PL"]},
+  "2026-5-11": {c:["U","SV"]},
+  "2026-5-12": {c:["V","S"]},
+  "2026-5-13": {c:["U","PL"]},
+  "2026-5-14": {c:["CC"]},
+  "2026-5-15": {c:["U"]},
+  "2026-5-16": {c:["U","PL"]},
+  "2026-5-18": {c:["U"]},
+  "2026-5-19": {c:["V","S"]},
+  "2026-5-20": {c:["U","PL"]},
+  "2026-5-21": {c:["CC"]},
+  "2026-5-22": {c:["U"]},
+  "2026-5-23": {c:["U","PL"]},
+  "2026-5-25": {c:["U","SV"]},
+  "2026-5-26": {c:["V","S"]},
+  "2026-5-27": {c:["U","PL"]},
+  "2026-5-28": {c:["CC"]},
+  "2026-5-29": {c:["U"]},
+  "2026-5-30": {c:["U","PL"]},
+  // ── GIUGNO ──
+  "2026-6-1": {c:["V","S"], asterisk:true},
+  "2026-6-2": {c:["U"], asterisk:true},
+  "2026-6-3": {c:["U","PL"]},
+  "2026-6-4": {c:["CC"]},
+  "2026-6-5": {c:["U"]},
+  "2026-6-6": {c:["U","PL"]},
+  "2026-6-8": {c:["U","SV"]},
+  "2026-6-9": {c:["V","S"]},
+  "2026-6-10": {c:["U","PL"]},
+  "2026-6-11": {c:["CC"]},
+  "2026-6-12": {c:["U"]},
+  "2026-6-13": {c:["U","PL"]},
+  "2026-6-15": {c:["U"]},
+  "2026-6-16": {c:["V","S"]},
+  "2026-6-17": {c:["U","PL"]},
+  "2026-6-18": {c:["CC"]},
+  "2026-6-19": {c:["U"]},
+  "2026-6-20": {c:["U","PL"]},
+  "2026-6-22": {c:["U","SV"]},
+  "2026-6-23": {c:["V","S"]},
+  "2026-6-24": {c:["U","PL"]},
+  "2026-6-25": {c:["CC"]},
+  "2026-6-26": {c:["U"]},
+  "2026-6-27": {c:["U","PL"]},
+  "2026-6-29": {c:["U"]},
+  "2026-6-30": {c:["V","S"]},
+  // ── LUGLIO ──
+  "2026-7-1": {c:["U","PL"]},
+  "2026-7-2": {c:["CC"]},
+  "2026-7-3": {c:["U"]},
+  "2026-7-4": {c:["U","PL"]},
+  "2026-7-6": {c:["U","SV"]},
+  "2026-7-7": {c:["V","S"]},
+  "2026-7-8": {c:["U","PL"]},
+  "2026-7-9": {c:["CC"]},
+  "2026-7-10": {c:["U"]},
+  "2026-7-11": {c:["U","PL"]},
+  "2026-7-13": {c:["U"]},
+  "2026-7-14": {c:["V","S"]},
+  "2026-7-15": {c:["U","PL"]},
+  "2026-7-16": {c:["CC"]},
+  "2026-7-17": {c:["U"]},
+  "2026-7-18": {c:["U","PL"]},
+  "2026-7-20": {c:["U","SV"]},
+  "2026-7-21": {c:["V","S"]},
+  "2026-7-22": {c:["U","PL"]},
+  "2026-7-23": {c:["CC"]},
+  "2026-7-24": {c:["U"]},
+  "2026-7-25": {c:["U","PL"]},
+  "2026-7-27": {c:["U"]},
+  "2026-7-28": {c:["V","S"]},
+  "2026-7-29": {c:["U","PL"]},
+  "2026-7-30": {c:["CC"]},
+  "2026-7-31": {c:["U"]},
+  // ── AGOSTO ──
+  "2026-8-1": {c:["U","PL"]},
+  "2026-8-3": {c:["U","SV"]},
+  "2026-8-4": {c:["V","S"]},
+  "2026-8-5": {c:["U","PL"]},
+  "2026-8-6": {c:["CC"]},
+  "2026-8-7": {c:["U"]},
+  "2026-8-8": {c:["U","PL"]},
+  "2026-8-10": {c:["U"]},
+  "2026-8-11": {c:["V","S"]},
+  "2026-8-12": {c:["U","PL"]},
+  "2026-8-13": {c:["CC","U"], asterisk:true},
+  "2026-8-14": {c:["U","PL"], asterisk:true},
+  "2026-8-15": {c:[], asterisk:true},
+  "2026-8-17": {c:["U","SV"]},
+  "2026-8-18": {c:["V","S"]},
+  "2026-8-19": {c:["U","PL"]},
+  "2026-8-20": {c:["CC"]},
+  "2026-8-21": {c:["U"]},
+  "2026-8-22": {c:["U","PL"]},
+  "2026-8-24": {c:["U"]},
+  "2026-8-25": {c:["V","S"]},
+  "2026-8-26": {c:["U","PL"]},
+  "2026-8-27": {c:["CC"]},
+  "2026-8-28": {c:["U"]},
+  "2026-8-29": {c:["U","PL"]},
+  "2026-8-31": {c:["U","SV"]},
+  // ── SETTEMBRE ──
+  "2026-9-1": {c:["V","S"]},
+  "2026-9-2": {c:["U","PL"]},
+  "2026-9-3": {c:["CC"]},
+  "2026-9-4": {c:["U"]},
+  "2026-9-5": {c:["U","PL"]},
+  "2026-9-7": {c:["U"]},
+  "2026-9-8": {c:["V","S"]},
+  "2026-9-9": {c:["U","PL"]},
+  "2026-9-10": {c:["CC"]},
+  "2026-9-11": {c:["U"]},
+  "2026-9-12": {c:["U","PL"]},
+  "2026-9-14": {c:["U","SV"]},
+  "2026-9-15": {c:["V","S"]},
+  "2026-9-16": {c:["U","PL"]},
+  "2026-9-17": {c:["CC"]},
+  "2026-9-18": {c:["U"]},
+  "2026-9-19": {c:["U","PL"]},
+  "2026-9-21": {c:["U"]},
+  "2026-9-22": {c:["V","S"]},
+  "2026-9-23": {c:["U","PL"]},
+  "2026-9-24": {c:["CC"]},
+  "2026-9-25": {c:["U"]},
+  "2026-9-26": {c:["U","PL"]},
+  "2026-9-28": {c:["U","SV"]},
+  "2026-9-29": {c:["V","S"]},
+  "2026-9-30": {c:["U","PL"]},
+  // ── OTTOBRE ──
+  "2026-10-1": {c:["CC"]},
+  "2026-10-2": {c:["U"]},
+  "2026-10-3": {c:["U","PL"]},
+  "2026-10-5": {c:["U"]},
+  "2026-10-6": {c:["V","S"]},
+  "2026-10-7": {c:["U","PL"]},
+  "2026-10-8": {c:["CC"]},
+  "2026-10-9": {c:["U"]},
+  "2026-10-10": {c:["U","PL"]},
+  "2026-10-12": {c:["U","SV"]},
+  "2026-10-13": {c:["V","S"]},
+  "2026-10-14": {c:["U","PL"]},
+  "2026-10-15": {c:["CC"]},
+  "2026-10-16": {c:["U"]},
+  "2026-10-17": {c:["U","PL"]},
+  "2026-10-19": {c:["U"]},
+  "2026-10-20": {c:["V","S"]},
+  "2026-10-21": {c:["U","PL"]},
+  "2026-10-22": {c:["CC"]},
+  "2026-10-23": {c:["U"]},
+  "2026-10-24": {c:["U","PL"]},
+  "2026-10-26": {c:["U","SV"]},
+  "2026-10-27": {c:["V","S"]},
+  "2026-10-28": {c:["U","PL"]},
+  "2026-10-29": {c:["CC"]},
+  "2026-10-30": {c:["U"]},
+  "2026-10-31": {c:["U","PL"]},
+  // ── NOVEMBRE ──
+  "2026-11-2": {c:["U"]},
+  "2026-11-3": {c:["V","S"]},
+  "2026-11-4": {c:["U","PL"]},
+  "2026-11-5": {c:["CC"]},
+  "2026-11-6": {c:["U"]},
+  "2026-11-7": {c:["U","PL"]},
+  "2026-11-9": {c:["U"]},
+  "2026-11-10": {c:["V","S"]},
+  "2026-11-11": {c:["U","PL"]},
+  "2026-11-12": {c:["U","SV"]},
+  "2026-11-13": {c:["U","PL"]},
+  "2026-11-14": {c:["U","PL"]},
+  "2026-11-16": {c:["U"]},
+  "2026-11-17": {c:["V","S"]},
+  "2026-11-18": {c:["U","PL"]},
+  "2026-11-19": {c:["CC"]},
+  "2026-11-20": {c:["U"]},
+  "2026-11-21": {c:["U","PL"]},
+  "2026-11-23": {c:["U","SV"]},
+  "2026-11-24": {c:["V","S"]},
+  "2026-11-25": {c:["U","PL"]},
+  "2026-11-26": {c:["CC"]},
+  "2026-11-27": {c:["U"]},
+  "2026-11-28": {c:["U","PL"]},
+  "2026-11-30": {c:["U"]},
+  // ── DICEMBRE ──
+  "2026-12-1": {c:["V","S"]},
+  "2026-12-2": {c:["U","PL"]},
+  "2026-12-3": {c:["CC"]},
+  "2026-12-4": {c:["U"]},
+  "2026-12-5": {c:["U","PL"]},
+  "2026-12-7": {c:["U","SV","V"], asterisk:true},
+  "2026-12-8": {c:["U"], asterisk:true},
+  "2026-12-9": {c:["U","PL"]},
+  "2026-12-10": {c:["CC"]},
+  "2026-12-11": {c:["U"]},
+  "2026-12-12": {c:["U","PL"]},
+  "2026-12-14": {c:["U"]},
+  "2026-12-15": {c:["V","S"]},
+  "2026-12-16": {c:["U","PL"]},
+  "2026-12-17": {c:["CC"]},
+  "2026-12-18": {c:["U"]},
+  "2026-12-19": {c:["U","PL"]},
+  "2026-12-21": {c:["U","SV"]},
+  "2026-12-22": {c:["V","S"]},
+  "2026-12-23": {c:["U","PL"]},
+  "2026-12-24": {c:["CC","U"], asterisk:true},
+  "2026-12-25": {c:[], asterisk:true},
+  "2026-12-26": {c:["U","PL"]},
+  "2026-12-28": {c:["U"]},
+  "2026-12-29": {c:["V","S"]},
+  "2026-12-30": {c:["U","PL"]},
+  "2026-12-31": {c:["CC","U"], asterisk:true},
+}
+
+const collectionInfo = {
+  U:  { name:"Umido",             icon:"🟢", emoji:"🍌", desc:"Scarti alimentari e organici",         cls:"umido"    },
+  CC: { name:"Carta e Cartone",   icon:"🔵", emoji:"📦", desc:"Carta, giornali, cartoni",              cls:"carta"    },
+  V:  { name:"Vetro",             icon:"🟩", emoji:"🍾", desc:"Bottiglie e barattoli in vetro",        cls:"vetro"    },
+  PL: { name:"Plastica e Lattine",icon:"🟡", emoji:"♻️", desc:"Imballaggi plastici e lattine metallo", cls:"plastica" },
+  SV: { name:"Sfalci Verdi",      icon:"🌿", emoji:"🌱", desc:"Potature, erba e ramaglie (con iscrizione)", cls:"sfalci" },
+  S:  { name:"Secco Residuo",     icon:"⚫", emoji:"🗑️", desc:"Rifiuti non riciclabili",               cls:"secco"    },
+  P:  { name:"Pannolini",         icon:"🟣", emoji:"👶", desc:"Pannolini e pannoloni (con iscrizione)",cls:"pannolini"},
+};
+
+const DOT_COLORS = {
+  U: "#52b788", CC: "#457b9d", V: "#6a994e",
+  PL: "#e9c46a", SV: "#a7c957", S: "#6c757d", P: "#c77dff"
+};
+
+const GIORNI = ["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+const MESI   = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
+                 "Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+
+// L'app mostra sempre il GIORNO SUCCESSIVO per default
+// "Cosa metto fuori stasera?" → raccolte di domani mattina
+function getTomorrow() {
+  const t = new Date();
+  t.setDate(t.getDate() + 1);
+  return t;
+}
+let currentDate = getTomorrow();
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function getDay(d) {
+  return calendar[dateKey(d)] || {c:[], asterisk:false};
+}
+
+function isToday(d) {
+  const t = new Date();
+  return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
+}
+function isTomorrow(d) {
+  const t = getTomorrow();
+  return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
+}
+
+function render() {
+  const d = currentDate;
+  const day = getDay(d);
+
+  // Header date
+  document.getElementById('dayNum').textContent = d.getDate();
+  document.getElementById('dateFull').textContent =
+    `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`;
+
+  // Label sezione raccolte
+  let label;
+  if (isTomorrow(d)) label = "🌙 Metti fuori stasera — raccolta di domani";
+  else if (isToday(d)) label = "Raccolte di oggi";
+  else label = `Raccolte del ${d.getDate()} ${MESI[d.getMonth()]}`;
+  document.getElementById('collectionsLabel').textContent = label;
+
+  // Asterisk
+  document.getElementById('asteriskNote').style.display = day.asterisk ? 'flex' : 'none';
+
+  // Collections
+  const cont = document.getElementById('collections');
+  cont.innerHTML = '';
+  if (day.c.length === 0) {
+    cont.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">${day.asterisk ? '⚠️' : '🎉'}</div>
+      <h3>${day.asterisk ? 'Raccolta sospesa o recuperata' : 'Nessuna raccolta'}</h3>
+      <p>${day.asterisk ? 'Giorno festivo: verifica eventuali variazioni sul calendario.' : (isTomorrow(d) ? 'Nessuna raccolta domani. Puoi riposarti stasera!' : 'Nessuna raccolta programmata.')}</p>
+    </div>`;
+  } else {
+    day.c.forEach((code, i) => {
+      const info = collectionInfo[code];
+      if (!info) return;
+      const card = document.createElement('div');
+      card.className = `collection-card card-${info.cls}`;
+      card.style.animationDelay = `${i*60}ms`;
+      card.innerHTML = `
+        <div class="collection-icon icon-${info.cls}">${info.emoji}</div>
+        <div>
+          <div class="collection-name">${info.name}</div>
+          <div class="collection-desc">${info.desc}</div>
+        </div>`;
+      cont.appendChild(card);
+    });
+  }
+
+  // Week strip
+  renderWeek();
+}
+
+function renderWeek() {
+  const strip = document.getElementById('weekStrip');
+  strip.innerHTML = '';
+  const today = new Date();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const day = getDay(d);
+    const div = document.createElement('div');
+    const isSelected = dateKey(d) === dateKey(currentDate);
+    div.className = 'week-day' + (isSelected ? ' active' : '');
+
+    const dotsHtml = day.c.map(c =>
+      `<div class="wd-dot" style="background:${DOT_COLORS[c]||'#ccc'}"></div>`
+    ).join('');
+
+    const dayLabel = i === 0 ? 'Oggi' : ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'][d.getDay()];
+
+    div.innerHTML = `
+      <div class="wd-name">${dayLabel}</div>
+      <div class="wd-num">${d.getDate()}</div>
+      <div class="wd-dots">${dotsHtml}</div>`;
+
+    const dd = new Date(d);
+    div.onclick = () => { currentDate = dd; render(); };
+    strip.appendChild(div);
+  }
+}
+
+function changeDay(delta) {
+  currentDate = new Date(currentDate);
+  currentDate.setDate(currentDate.getDate() + delta);
+  render();
+}
+function goToday() {
+  // "Torna" = torna alla vista di default (domani = cosa metto fuori stasera)
+  currentDate = getTomorrow();
+  render();
+}
+
+// ── CALENDARIO ANNUALE ────────────────────────────────────────────────────────
+let calYear = 2026;
+let calMonth = new Date().getMonth();
+let calSelectedKey = null;
+// Clamp al 2026
+if (new Date().getFullYear() < 2026) calMonth = 0;
+if (new Date().getFullYear() > 2026) calMonth = 11;
+
+function toggleCalendar() {
+  const panel = document.getElementById('calPanel');
+  const btn = document.getElementById('calToggleBtn');
+  const label = document.getElementById('calToggleLabel');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open');
+  btn.classList.toggle('open');
+  label.textContent = isOpen ? 'Apri' : 'Chiudi';
+  if (!isOpen) renderCalendar();
+}
+
+function changeCalMonth(delta) {
+  calMonth += delta;
+  if (calMonth < 0) calMonth = 11;
+  if (calMonth > 11) calMonth = 0;
+  calSelectedKey = null;
+  document.getElementById('calDayDetail').classList.remove('show');
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calGrid');
+  const title = document.getElementById('calMonthTitle');
+  grid.innerHTML = '';
+  title.textContent = `${MESI[calMonth]} ${calYear}`;
+
+  const dayNames = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+  dayNames.forEach(n => {
+    const h = document.createElement('div');
+    h.className = 'cal-header-cell';
+    h.textContent = n;
+    grid.appendChild(h);
+  });
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const offset = (firstDay === 0) ? 6 : firstDay - 1;
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < offset; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-cell empty';
+    grid.appendChild(e);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${calYear}-${calMonth+1}-${d}`;
+    const dayData = calendar[key] || {c:[], asterisk:false};
+    const cell = document.createElement('div');
+    const isToday2 = (d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear());
+    const isSelected = key === calSelectedKey;
+
+    cell.className = [
+      'cal-cell',
+      isToday2 ? 'today' : '',
+      isSelected ? 'selected' : '',
+      dayData.asterisk ? 'has-asterisk' : '',
+      dayData.c.length === 0 && !dayData.asterisk ? 'no-collection' : ''
+    ].filter(Boolean).join(' ');
+
+    const dotsHtml = dayData.c.map(c =>
+      `<div class="cal-dot" style="background:${DOT_COLORS[c]||'#ccc'}"></div>`
+    ).join('');
+
+    cell.innerHTML = `<div class="cal-day-num">${d}</div><div class="cal-dots">${dotsHtml}</div>`;
+
+    cell.onclick = () => {
+      calSelectedKey = key;
+      const date = new Date(calYear, calMonth, d);
+      showCalDayDetail(d, dayData, date);
+      renderCalendar();
+    };
+    grid.appendChild(cell);
+  }
+}
+
+function showCalDayDetail(dayNum, dayData, date) {
+  const detail = document.getElementById('calDayDetail');
+  const titleEl = document.getElementById('calDayDetailTitle');
+  const itemsEl = document.getElementById('calDayDetailItems');
+
+  titleEl.textContent = `${GIORNI[date.getDay()]} ${dayNum} ${MESI[calMonth]}${dayData.asterisk ? '  ⚠️' : ''}`;
+
+  if (dayData.c.length === 0) {
+    itemsEl.innerHTML = `<span style="font-size:13px;color:var(--muted)">${dayData.asterisk ? 'Raccolta sospesa/recuperata — verifica variazioni' : 'Nessuna raccolta'}</span>`;
+  } else {
+    itemsEl.innerHTML = dayData.c.map(code => {
+      const info = collectionInfo[code];
+      return `<div class="cal-chip" style="background:var(--${info.cls}-bg);color:var(--${info.cls})">
+        ${info.emoji} ${info.name}
+      </div>`;
+    }).join('');
+  }
+
+  detail.classList.add('show');
+
+  // Aggiorna anche la vista principale
+  currentDate = new Date(date);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
