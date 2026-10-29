@@ -7,13 +7,25 @@ const URL_DATI = "https://porto-fuori.pages.dev/calendario.json";
 const URL_APP  = "https://porto-fuori.pages.dev/";
 const NASCONDI = []; // es. ["P", "SV"] per nascondere Pannolini e Sfalci se non sei iscritto
 
-const BREVE = { U: "Umido", CC: "Carta", V: "Vetro", PL: "Plastica", SV: "Sfalci", S: "Secco", P: "Pannolini" };
-const COLORI = { U: "#52b788", CC: "#457b9d", V: "#6a994e", PL: "#e9c46a", SV: "#a7c957", S: "#6c757d", P: "#c77dff" };
-const SFONDO = Color.dynamic(new Color("#f5f0e8"), new Color("#1a1a2e"));
-const TESTO  = Color.dynamic(new Color("#1a1a2e"), new Color("#f5f0e8"));
-const TENUE  = Color.dynamic(new Color("#7a7a8a"), new Color("#a0a0b0"));
-const ACCENT = Color.dynamic(new Color("#2d6a4f"), new Color("#52b788"));
-const GIORNI = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+// Tipi: nome breve, colore, testo sul colore, simboli SF (il primo disponibile)
+const TIPI = {
+  U:  { nome: "Umido",     col: "#40916c", txt: "#ffffff", sf: ["carrot.fill", "leaf.fill"] },
+  CC: { nome: "Carta",     col: "#3a6ea5", txt: "#ffffff", sf: ["newspaper.fill", "doc.fill"] },
+  V:  { nome: "Vetro",     col: "#2a9d8f", txt: "#ffffff", sf: ["wineglass.fill", "drop.fill"] },
+  PL: { nome: "Plastica",  col: "#f2c14e", txt: "#2b2412", sf: ["waterbottle.fill", "arrow.3.trianglepath"] },
+  SV: { nome: "Sfalci",    col: "#a7c957", txt: "#1f2a10", sf: ["tree.fill", "leaf.fill"] },
+  S:  { nome: "Secco",     col: "#5c636a", txt: "#ffffff", sf: ["trash.fill"] },
+  P:  { nome: "Pannolini", col: "#9d4edd", txt: "#ffffff", sf: ["figure.and.child.holdinghands", "heart.fill"] },
+};
+
+const SFONDO_1 = Color.dynamic(new Color("#fbf8f2"), new Color("#1c1f26"));
+const SFONDO_2 = Color.dynamic(new Color("#efe7d8"), new Color("#12141a"));
+const TESTO    = Color.dynamic(new Color("#1a1a2e"), new Color("#f2efe8"));
+const TENUE    = Color.dynamic(new Color("#8a8778"), new Color("#8d909a"));
+const ACCENT   = Color.dynamic(new Color("#2d6a4f"), new Color("#74c69d"));
+const RIGA     = Color.dynamic(new Color("#ffffff", 0.7), new Color("#ffffff", 0.06));
+const AVVISO   = new Color("#e76f51");
+const GIORNI   = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
 
 // ── Dati (con copia locale per quando sei offline) ────────────
 const fm = FileManager.local();
@@ -24,6 +36,7 @@ async function caricaDati() {
     const req = new Request(URL_DATI);
     req.timeoutInterval = 10;
     const dati = await req.loadJSON();
+    if (!dati?.giorni) throw new Error("formato");
     fm.writeString(cache, JSON.stringify(dati));
     return dati;
   } catch (e) {
@@ -38,50 +51,105 @@ const piuGiorni = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() 
 
 function raccolte(dati, data) {
   const g = dati?.giorni?.[chiave(data)];
-  return { c: (g?.c ?? []).filter((x) => !NASCONDI.includes(x)), festivo: !!g?.festivo, presente: !!g };
+  return {
+    c: (g?.c ?? []).filter((x) => TIPI[x] && !NASCONDI.includes(x)),
+    festivo: !!g?.festivo,
+    scaduto: !!dati && chiave(data) > dati.al,
+  };
 }
 
-// ── Disegno ───────────────────────────────────────────────────
-function riga(stack, codice, size) {
-  const r = stack.addStack();
-  r.centerAlignContent();
-  const pallino = r.addText("●");
-  pallino.font = Font.systemFont(size);
-  pallino.textColor = new Color(COLORI[codice] ?? "#999999");
-  r.addSpacer(5);
-  const t = r.addText(BREVE[codice] ?? codice);
-  t.font = Font.semiboldSystemFont(size);
-  t.textColor = TESTO;
-  t.lineLimit = 1;
-  t.minimumScaleFactor = 0.7;
+// ── Mattoncini grafici ────────────────────────────────────────
+function simbolo(nomi) {
+  for (const n of nomi) {
+    const s = SFSymbol.named(n);
+    if (s && s.image) return s;
+  }
+  return SFSymbol.named("circle.fill");
 }
 
-function bloccoSera(stack, info, dati, size) {
-  if (!dati) {
-    const t = stack.addText("Dati non disponibili");
-    t.font = Font.systemFont(size - 2); t.textColor = TENUE;
-  } else if (!info.presente && info.c.length === 0 && chiave(piuGiorni(new Date(), 1)) > dati.al) {
-    const t = stack.addText("Calendario scaduto: aggiorna l'app");
-    t.font = Font.systemFont(size - 2); t.textColor = TENUE;
-  } else if (info.c.length === 0) {
-    const t = stack.addText("Niente stasera 🎉");
-    t.font = Font.semiboldSystemFont(size); t.textColor = TESTO;
+function icona(stack, nomi, size, colore) {
+  const s = simbolo(nomi);
+  s.applyFont(Font.semiboldSystemFont(size));
+  const img = stack.addImage(s.image);
+  img.imageSize = new Size(size, size);
+  img.tintColor = colore;
+  img.resizable = true;
+  return img;
+}
+
+function testo(stack, t, font, colore) {
+  const x = stack.addText(t);
+  x.font = font;
+  x.textColor = colore;
+  x.lineLimit = 1;
+  x.minimumScaleFactor = 0.6;
+  return x;
+}
+
+// Pillola piena: icona + nome, su colore del tipo
+function pillola(stack, codice, altezza) {
+  const t = TIPI[codice];
+  const p = stack.addStack();
+  p.layoutHorizontally();
+  p.centerAlignContent();
+  p.backgroundColor = new Color(t.col);
+  p.cornerRadius = altezza / 2.6;
+  p.size = new Size(0, altezza);
+  p.setPadding(0, 10, 0, 10);
+  icona(p, t.sf, altezza * 0.5, new Color(t.txt));
+  p.addSpacer(7);
+  testo(p, t.nome, Font.boldRoundedSystemFont(altezza * 0.5), new Color(t.txt));
+  p.addSpacer();
+  return p;
+}
+
+// Bollino tondo con icona (per le prossime sere)
+function bollino(stack, codice, d) {
+  const t = TIPI[codice];
+  const b = stack.addStack();
+  b.size = new Size(d, d);
+  b.cornerRadius = d / 2;
+  b.backgroundColor = new Color(t.col);
+  b.centerAlignContent();
+  icona(b, t.sf, d * 0.55, new Color(t.txt));
+}
+
+function intestazione(stack, oggi) {
+  const h = stack.addStack();
+  h.layoutHorizontally();
+  h.centerAlignContent();
+  icona(h, ["moon.stars.fill", "moon.fill"], 12, ACCENT);
+  h.addSpacer(4);
+  testo(h, "STASERA", Font.heavyRoundedSystemFont(12), ACCENT);
+  h.addSpacer();
+  testo(h, `${GIORNI[oggi.getDay()].toLowerCase()} ${oggi.getDate()}`, Font.semiboldRoundedSystemFont(11), TENUE);
+}
+
+function vuoto(stack, info, dati) {
+  const v = stack.addStack();
+  v.layoutVertically();
+  if (!dati || info.scaduto) {
+    icona(v, ["exclamationmark.arrow.circlepath", "exclamationmark.circle.fill"], 26, AVVISO);
+    v.addSpacer(6);
+    testo(v, !dati ? "Nessun dato" : "Calendario scaduto", Font.boldRoundedSystemFont(15), TESTO);
+    testo(v, !dati ? "Controlla la connessione" : "Aggiorna i dati dell'app", Font.mediumRoundedSystemFont(11), TENUE);
   } else {
-    info.c.forEach((c, i) => { if (i) stack.addSpacer(3); riga(stack, c, size); });
-  }
-  if (info.festivo) {
-    stack.addSpacer(3);
-    const t = stack.addText("⚠︎ Festivo: verifica");
-    t.font = Font.systemFont(size - 4); t.textColor = TENUE;
+    icona(v, ["moon.zzz.fill", "moon.fill"], 28, ACCENT);
+    v.addSpacer(6);
+    testo(v, "Niente da", Font.boldRoundedSystemFont(17), TESTO);
+    testo(v, "portare fuori", Font.boldRoundedSystemFont(17), TESTO);
   }
 }
 
-function intestazione(stack, testo) {
-  const t = stack.addText(testo);
-  t.font = Font.boldSystemFont(11);
-  t.textColor = ACCENT;
+function etichettaFestivo(stack) {
+  const f = stack.addStack();
+  f.centerAlignContent();
+  icona(f, ["exclamationmark.triangle.fill"], 10, AVVISO);
+  f.addSpacer(3);
+  testo(f, "Festivo · verifica", Font.semiboldRoundedSystemFont(10), AVVISO);
 }
 
+// ── Widget ────────────────────────────────────────────────────
 async function creaWidget() {
   const dati = await caricaDati();
   const oggi = new Date();
@@ -90,64 +158,109 @@ async function creaWidget() {
   const famiglia = config.widgetFamily ?? "medium";
   const w = new ListWidget();
   w.url = URL_APP;
-
-  // aggiorna poco dopo mezzanotte
   w.refreshAfterDate = new Date(domani.getFullYear(), domani.getMonth(), domani.getDate(), 0, 5);
+  const nomi = stasera.c.map((c) => TIPI[c].nome);
 
+  // ── Schermata di blocco ──
   if (famiglia === "accessoryInline") {
-    w.addText(stasera.c.length ? `🗑 ${stasera.c.map((c) => BREVE[c]).join(" · ")}` : "🗑 Niente stasera");
+    w.addText(nomi.length ? `🌙 ${nomi.join(" · ")}` : "🌙 Niente stasera");
     return w;
   }
   if (famiglia === "accessoryCircular") {
     w.addAccessoryWidgetBackground = true;
-    const t = w.addText(stasera.c.length ? stasera.c.map((c) => BREVE[c][0]).join("") : "–");
-    t.font = Font.boldSystemFont(16); t.centerAlignText();
+    const s = w.addStack();
+    s.layoutVertically();
+    s.centerAlignContent();
+    const r1 = s.addStack(); r1.addSpacer();
+    icona(r1, stasera.c.length ? TIPI[stasera.c[0]].sf : ["moon.zzz.fill"], 20, Color.white());
+    r1.addSpacer();
+    if (stasera.c.length > 1) {
+      s.addSpacer(2);
+      const r2 = s.addStack(); r2.addSpacer();
+      testo(r2, `+${stasera.c.length - 1}`, Font.boldRoundedSystemFont(11), Color.white());
+      r2.addSpacer();
+    }
     return w;
   }
   if (famiglia === "accessoryRectangular") {
-    const h = w.addText("🌙 Fuori stasera");
-    h.font = Font.boldSystemFont(12);
-    const t = w.addText(stasera.c.length ? stasera.c.map((c) => BREVE[c]).join(", ") : "Niente 🎉");
-    t.font = Font.systemFont(14); t.minimumScaleFactor = 0.7;
+    const h = w.addStack();
+    h.centerAlignContent();
+    icona(h, ["moon.stars.fill"], 12, Color.white());
+    h.addSpacer(4);
+    testo(h, "FUORI STASERA", Font.heavyRoundedSystemFont(12), Color.white());
+    w.addSpacer(3);
+    const r = w.addStack();
+    r.centerAlignContent();
+    if (!stasera.c.length) {
+      testo(r, "Niente 😴", Font.boldRoundedSystemFont(16), Color.white());
+    } else {
+      stasera.c.forEach((c, i) => {
+        if (i) r.addSpacer(8);
+        icona(r, TIPI[c].sf, 14, Color.white());
+        r.addSpacer(3);
+        testo(r, TIPI[c].nome, Font.boldRoundedSystemFont(14), Color.white());
+      });
+    }
     return w;
   }
 
-  // Home: piccolo e medio
-  w.backgroundColor = SFONDO;
+  // ── Home ──
+  const g = new LinearGradient();
+  g.colors = [SFONDO_1, SFONDO_2];
+  g.locations = [0, 1];
+  w.backgroundGradient = g;
   w.setPadding(14, 14, 14, 14);
+
   const corpo = w.addStack();
   corpo.layoutHorizontally();
 
   const sx = corpo.addStack();
   sx.layoutVertically();
-  intestazione(sx, "🌙 STASERA");
-  sx.addSpacer(6);
-  bloccoSera(sx, stasera, dati, famiglia === "small" ? 15 : 16);
+  intestazione(sx, oggi);
+  sx.addSpacer(10);
+
+  if (!stasera.c.length) {
+    vuoto(sx, stasera, dati);
+  } else {
+    const n = stasera.c.length;
+    const h = n <= 2 ? 34 : n === 3 ? 28 : 22;
+    stasera.c.slice(0, 4).forEach((c, i) => {
+      if (i) sx.addSpacer(n <= 2 ? 8 : 5);
+      pillola(sx, c, h);
+    });
+  }
   sx.addSpacer();
+  if (stasera.festivo) etichettaFestivo(sx);
 
   if (famiglia !== "small" && dati) {
-    corpo.addSpacer();
+    corpo.addSpacer(14);
     const dx = corpo.addStack();
     dx.layoutVertically();
-    intestazione(dx, "PROSSIME SERE");
-    dx.addSpacer(6);
+    dx.size = new Size(128, 0);
+    const h = dx.addStack();
+    testo(h, "PROSSIME SERE", Font.heavyRoundedSystemFont(11), TENUE);
+    dx.addSpacer(10);
     for (let i = 2; i <= 4; i++) {
       const giorno = piuGiorni(oggi, i);
       const info = raccolte(dati, giorno);
       const r = dx.addStack();
+      r.layoutHorizontally();
       r.centerAlignContent();
-      const g = r.addText(GIORNI[piuGiorni(giorno, -1).getDay()]);
-      g.font = Font.mediumSystemFont(12); g.textColor = TENUE;
-      r.addSpacer(6);
+      r.backgroundColor = RIGA;
+      r.cornerRadius = 10;
+      r.size = new Size(128, 30);
+      r.setPadding(0, 8, 0, 6);
+      const sera = piuGiorni(giorno, -1);
+      testo(r, GIORNI[sera.getDay()], Font.boldRoundedSystemFont(12), TESTO);
+      r.addSpacer();
       if (!info.c.length) {
-        const t = r.addText("–"); t.font = Font.systemFont(12); t.textColor = TENUE;
+        testo(r, "—", Font.boldRoundedSystemFont(12), TENUE);
       }
-      info.c.forEach((c) => {
-        const p = r.addText("●");
-        p.font = Font.systemFont(13);
-        p.textColor = new Color(COLORI[c] ?? "#999999");
+      info.c.slice(0, 3).forEach((c, j) => {
+        if (j) r.addSpacer(3);
+        bollino(r, c, 20);
       });
-      dx.addSpacer(5);
+      if (i < 4) dx.addSpacer(6);
     }
     dx.addSpacer();
   }
