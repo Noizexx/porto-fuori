@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#2d6a4f"/>
+  <!-- coperchio -->
+  <rect x="206" y="92" width="100" height="30" rx="12" fill="#f5f0e8"/>
+  <rect x="120" y="112" width="272" height="42" rx="14" fill="#f5f0e8"/>
+  <!-- corpo -->
+  <path d="M146 174 H366 L346 420 Q344 436 328 436 H184 Q168 436 166 420 Z" fill="#f5f0e8"/>
+  <!-- fasce colori raccolta -->
+  <rect x="184" y="206" width="24" height="196" rx="12" fill="#52b788"/>
+  <rect x="224" y="206" width="24" height="196" rx="12" fill="#457b9d"/>
+  <rect x="264" y="206" width="24" height="196" rx="12" fill="#e9c46a"/>
+  <rect x="304" y="206" width="24" height="196" rx="12" fill="#6a994e"/>
+</svg>
